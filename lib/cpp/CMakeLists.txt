@@ -169,6 +169,12 @@ if(WIN32)
 else()
     TARGET_LINK_LIBRARIES_THRIFT(thrift ${SYSLIBS})
 endif()
+if(TARGET thrift)
+  set_target_properties(thrift PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/src)
+endif()
+if(TARGET thrift_static)
+  set_target_properties(thrift_static PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/src)
+endif()
 
 if(WITH_LIBEVENT)
     find_package(Libevent REQUIRED)  # Libevent comes with CMake support form upstream
