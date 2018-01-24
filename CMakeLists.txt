@@ -93,6 +93,18 @@ endif()
 
 if(BUILD_CPP)
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp)
+    if(TARGET thrift)
+      set_property(TARGET thrift_static PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp/src
+        ${CMAKE_CURRENT_BINARY_DIR}
+        )
+    endif()
+    if(TARGET thrift_static)
+      set_property(TARGET thrift_static PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp/src
+        ${CMAKE_CURRENT_BINARY_DIR}
+        )
+    endif()
     if(BUILD_TUTORIALS)
         add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tutorial/cpp)
     endif()
