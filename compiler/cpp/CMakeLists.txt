@@ -29,8 +29,8 @@ if(MSVC)
     endif(HAVE_STDINT_H)
 endif()
 
-find_package(FLEX REQUIRED)
-find_package(BISON REQUIRED)
+find_package(FLEX 2.6 REQUIRED)
+find_package(BISON 3.0 REQUIRED)
 
 # create directory for thrifty and thriftl
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/thrift/)
