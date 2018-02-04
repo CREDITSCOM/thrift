@@ -94,12 +94,22 @@ endif()
 if(BUILD_CPP)
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp)
     if(TARGET thrift)
+      if(WITH_BOOSTTHREADS)
+        target_compile_definitions(thrift PUBLIC -DUSE_BOOST_THREAD=1)
+      elseif(WITH_STDTHREADS)
+        target_compile_definitions(thrift PUBLIC -DUSE_STD_THREAD=1)
+      endif()
       set_property(TARGET thrift_static PROPERTY INTERFACE_INCLUDE_DIRECTORIES
         ${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp/src
         ${CMAKE_CURRENT_BINARY_DIR}
         )
     endif()
     if(TARGET thrift_static)
+      if(WITH_BOOSTTHREADS)
+        target_compile_definitions(thrift_static PUBLIC -DUSE_BOOST_THREAD=1)
+      elseif(WITH_STDTHREADS)
+        target_compile_definitions(thrift_static PUBLIC -DUSE_STD_THREAD=1)
+      endif()
       set_property(TARGET thrift_static PROPERTY INTERFACE_INCLUDE_DIRECTORIES
         ${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp/src
         ${CMAKE_CURRENT_BINARY_DIR}
