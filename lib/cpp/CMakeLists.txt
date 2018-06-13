@@ -17,9 +17,6 @@
 # under the License.
 #
 
-include_directories(SYSTEM "${Boost_INCLUDE_DIRS}")
-include_directories(src)
-
 # SYSLIBS contains libraries that need to be linked to all lib targets
 set(SYSLIBS "")
 
@@ -164,6 +161,10 @@ set( thriftcppqt_SOURCES
 include(ThriftMacros)
 
 ADD_LIBRARY_THRIFT(thrift ${thriftcpp_SOURCES} ${thriftcpp_threads_SOURCES})
+
+TARGET_INCLUDE_DIRECTORIES_THRIFT(thrift SYSTEM PUBLIC "${Boost_INCLUDE_DIRS}")
+TARGET_INCLUDE_DIRECTORIES_THRIFT(thrift PUBLIC src)
+
 if(WIN32)
     TARGET_LINK_LIBRARIES_THRIFT(thrift ${SYSLIBS} ws2_32)
 else()

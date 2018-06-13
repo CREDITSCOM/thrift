@@ -99,10 +99,6 @@ if(BUILD_CPP)
       elseif(WITH_STDTHREADS)
         target_compile_definitions(thrift PUBLIC -DUSE_STD_THREAD=1)
       endif()
-      target_include_directories_thrift(thrift PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp/src
-        ${CMAKE_CURRENT_BINARY_DIR}
-        )
     endif()
     if(TARGET thrift_static)
       if(WITH_BOOSTTHREADS)
@@ -110,10 +106,6 @@ if(BUILD_CPP)
       elseif(WITH_STDTHREADS)
         target_compile_definitions(thrift_static PUBLIC -DUSE_STD_THREAD=1)
       endif()
-      target_include_directories_thrift(thrift PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp/src
-        ${CMAKE_CURRENT_BINARY_DIR}
-        )
     endif()
     if(BUILD_TUTORIALS)
         add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tutorial/cpp)
