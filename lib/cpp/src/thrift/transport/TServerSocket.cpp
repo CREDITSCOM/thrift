@@ -301,6 +301,15 @@ void TServerSocket::listen() {
                               errno_copy);
   }
 
+  int yes = 1;
+  if (-1 == setsockopt(serverSocket_,
+                       SOL_SOCKET,
+                       SO_REUSEADDR,
+                       cast_sockopt(&yes),
+                       sizeof(yes))) {
+    GlobalOutput.perror("TServerSocket::listen() SO_REUSEADDR", THRIFT_GET_SOCKET_ERROR);
+  }
+
   // Set THRIFT_NO_SOCKET_CACHING to prevent 2MSL delay on accept
   int one = 1;
   if (-1 == setsockopt(serverSocket_,
