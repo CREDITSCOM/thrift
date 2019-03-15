@@ -20,6 +20,7 @@
 #include <thrift/thrift-config.h>
 
 #include <algorithm>
+#include <random>
 #include <iostream>
 
 #include <thrift/transport/TSocketPool.h>
@@ -188,7 +189,10 @@ void TSocketPool::open() {
   }
 
   if (randomize_ && numServers > 1) {
-    random_shuffle(servers_.begin(), servers_.end());
+    std::random_device rd;
+    std::mt19937 g(rd());
+
+    std::shuffle(servers_.begin(), servers_.end(), g);
   }
 
   for (size_t i = 0; i < numServers; ++i) {
