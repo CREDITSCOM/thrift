@@ -21,6 +21,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <random>
 
 #include <thrift/transport/TSocketPool.h>
 
@@ -188,7 +189,7 @@ void TSocketPool::open() {
   }
 
   if (randomize_ && numServers > 1) {
-    random_shuffle(servers_.begin(), servers_.end());
+    shuffle(servers_.begin(), servers_.end(), std::default_random_engine{});
   }
 
   for (size_t i = 0; i < numServers; ++i) {
