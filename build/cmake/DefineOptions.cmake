@@ -20,6 +20,12 @@
 
 include(CMakeDependentOption)
 
+macro(suppress_boost_cmake_warnings)
+    cmake_policy(SET CMP0074 NEW)
+endmacro()
+
+suppress_boost_cmake_warnings()
+
 set(THRIFT_COMPILER "" CACHE FILEPATH "External Thrift compiler to use during build")
 
 # Additional components
