@@ -114,7 +114,7 @@ const uint8_t* TBufferedTransport::borrowSlow(uint8_t* buf, uint32_t* len) {
   (void)len;
   // Simply return NULL.  We don't know if there is actually data available on
   // the underlying transport, so calling read() might block.
-  return NULL;
+  return nullptr;
 }
 
 void TBufferedTransport::flush() {
@@ -195,7 +195,7 @@ bool TFramedTransport::readFrame() {
     size_bytes_read += bytes_read;
   }
 
-  sz = ntohl(sz);
+  sz = int32_t(ntohl(static_cast<unsigned long>(sz)));
 
   if (sz < 0) {
     throw TTransportException("Frame size has negative value");
@@ -207,11 +207,11 @@ bool TFramedTransport::readFrame() {
 
   // Read the frame payload, and reset markers.
   if (sz > static_cast<int32_t>(rBufSize_)) {
-    rBuf_.reset(new uint8_t[sz]);
-    rBufSize_ = sz;
+    rBuf_.reset(new uint8_t[static_cast<size_t>(sz)]);
+    rBufSize_ = static_cast<uint32_t>(sz);
   }
-  transport_->readAll(rBuf_.get(), sz);
-  setReadBuffer(rBuf_.get(), sz);
+  transport_->readAll(rBuf_.get(), static_cast<uint32_t>(sz));
+  setReadBuffer(rBuf_.get(), static_cast<uint32_t>(sz));
   return true;
 }
 
@@ -252,9 +252,9 @@ void TFramedTransport::flush() {
   assert(wBufSize_ > sizeof(sz_nbo));
 
   // Slip the frame size into the start of the buffer.
-  sz_hbo = static_cast<uint32_t>(wBase_ - (wBuf_.get() + sizeof(sz_nbo)));
-  sz_nbo = (int32_t)htonl((uint32_t)(sz_hbo));
-  memcpy(wBuf_.get(), (uint8_t*)&sz_nbo, sizeof(sz_nbo));
+  sz_hbo = static_cast<int32_t>(wBase_ - (wBuf_.get() + sizeof(sz_nbo)));
+  sz_nbo = static_cast<int32_t>(htonl(static_cast<uint32_t>(sz_hbo)));
+  std::memcpy(wBuf_.get(), reinterpret_cast<uint8_t*>(&sz_nbo), sizeof(sz_nbo));
 
   if (sz_hbo > 0) {
     // Note that we reset wBase_ (with a pad for the frame size)
@@ -264,7 +264,7 @@ void TFramedTransport::flush() {
     wBase_ = wBuf_.get() + sizeof(sz_nbo);
 
     // Write size and frame body.
-    transport_->write(wBuf_.get(), static_cast<uint32_t>(sizeof(sz_nbo)) + sz_hbo);
+    transport_->write(wBuf_.get(), static_cast<uint32_t>(sizeof(sz_nbo)) + static_cast<uint32_t>(sz_hbo));
   }
 
   // Flush the underlying transport.
@@ -292,12 +292,12 @@ const uint8_t* TFramedTransport::borrowSlow(uint8_t* buf, uint32_t* len) {
   // Don't try to be clever with shifting buffers.
   // If the fast path failed let the protocol use its slow path.
   // Besides, who is going to try to borrow across messages?
-  return NULL;
+  return nullptr;
 }
 
 uint32_t TFramedTransport::readEnd() {
   // include framing bytes
-  uint32_t bytes_read = static_cast<uint32_t>(rBound_ - rBuf_.get() + sizeof(uint32_t));
+  uint32_t bytes_read = static_cast<uint32_t>(rBound_ - rBuf_.get() + static_cast<int64_t>(sizeof(uint32_t)));
 
   if (rBufSize_ > bufReclaimThresh_) {
     rBufSize_ = 0;
@@ -335,7 +335,7 @@ uint32_t TMemoryBuffer::readSlow(uint8_t* buf, uint32_t len) {
 
 uint32_t TMemoryBuffer::readAppendToString(std::string& str, uint32_t len) {
   // Don't get some stupid assertion failure.
-  if (buffer_ == NULL) {
+  if (buffer_ == nullptr) {
     return 0;
   }
 
@@ -344,7 +344,7 @@ uint32_t TMemoryBuffer::readAppendToString(std::string& str, uint32_t len) {
   computeRead(len, &start, &give);
 
   // Append to the provided string.
-  str.append((char*)start, give);
+  str.append(reinterpret_cast<char*>(start), give);
 
   return give;
 }
@@ -368,12 +368,12 @@ void TMemoryBuffer::ensureCanWrite(uint32_t len) {
       throw TTransportException(TTransportException::BAD_ARGS,
                                 "Internal buffer size overflow");
     }
-    avail = available_write() + (new_size - bufferSize_);
+    avail = static_cast<uint32_t>(available_write() + (new_size - bufferSize_));
   }
 
   // Allocate into a new pointer so we don't bork ours if it fails.
   uint8_t* new_buffer = static_cast<uint8_t*>(std::realloc(buffer_, new_size));
-  if (new_buffer == NULL) {
+  if (new_buffer == nullptr) {
     throw std::bad_alloc();
   }
 
@@ -382,7 +382,7 @@ void TMemoryBuffer::ensureCanWrite(uint32_t len) {
   wBase_ = new_buffer + (wBase_ - buffer_);
   wBound_ = new_buffer + new_size;
   buffer_ = new_buffer;
-  bufferSize_ = new_size;
+  bufferSize_ = static_cast<uint32_t>(new_size);
 }
 
 void TMemoryBuffer::writeSlow(const uint8_t* buf, uint32_t len) {
@@ -408,7 +408,7 @@ const uint8_t* TMemoryBuffer::borrowSlow(uint8_t* buf, uint32_t* len) {
     *len = available_read();
     return rBase_;
   }
-  return NULL;
+  return nullptr;
 }
 }
 }
