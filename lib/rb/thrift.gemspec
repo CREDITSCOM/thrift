@@ -28,10 +28,10 @@ Gem::Specification.new do |s|
   s.require_paths = %w[lib ext]
 
   s.add_development_dependency 'rspec', ['>= 2.10.0', '< 2.14.0']
-  s.add_development_dependency "rack", "~> 1.5"
+  s.add_development_dependency "rack", ">= 2.1.4"
   s.add_development_dependency "rack-test", "< 0.8.0" # until we no longer build on trusty, then "~> 0.8.2"
   s.add_development_dependency "thin", "~> 1.5"
-  s.add_development_dependency "bundler", "~> 1"
+  s.add_development_dependency "bundler", ">= 2.2.10"
   s.add_development_dependency 'rake', '~> 10.5'
 end
 
