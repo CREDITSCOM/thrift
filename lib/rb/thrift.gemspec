@@ -32,6 +32,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rack-test", "< 0.8.0" # until we no longer build on trusty, then "~> 0.8.2"
   s.add_development_dependency "thin", "~> 1.5"
   s.add_development_dependency "bundler", ">= 2.2.10"
-  s.add_development_dependency 'rake', '~> 10.5'
+  s.add_development_dependency 'rake', '>= 12.3.3'
 end
 
